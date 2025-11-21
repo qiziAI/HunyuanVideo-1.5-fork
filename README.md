@@ -186,7 +186,7 @@ For models with a vLLM API, note that T2V (text-to-video) and I2V (image-to-vide
 - I2V: use [Qwen3-VL-235B-A22B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct), configure `I2V_REWRITE_BASE_URL` and `I2V_REWRITE_MODEL_NAME`
 
 > You may set the above model names to any other vLLM-compatible models you have deployed (including HuggingFace models).  
-> Rewriting is enabled by default; to disable it explicitly, use the `--disable_rewrite` flag. If no vLLM endpoint is configured, the pipeline runs without remote rewriting.
+> Rewriting is enabled by default (`--rewrite` defaults to `true`); to disable it explicitly, use `--rewrite false` or `--rewrite 0`. If no vLLM endpoint is configured, the pipeline runs without remote rewriting.
 
 Example: Generate a video (works for both T2V and I2V; set `IMAGE_PATH=none` for T2V or provide an image path for I2V)
 
@@ -196,7 +196,7 @@ export T2V_REWRITE_MODEL_NAME="<your_model_name>"
 export I2V_REWRITE_BASE_URL="<your_vllm_server_base_url>"
 export I2V_REWRITE_MODEL_NAME="<your_model_name>"
 
-PROMPT='On a wet street corner in a cyberpunk city at night, a large neon sign reading "Hunyuan Video 1.5" lights up sequentially, illuminating the dark, rainy environment with a pinkish-purple glow. he scene is a dark, rain-slicked street corner in a futuristic, cinematic cyberpunk city. Mounted on the metallic, weathered facade of a building is a massive, unlit neon sign. The sign's glass tube framework clearly spells out the words "Hunyuan Video 1.5". Initially, the street is dimly lit, with ambient light from distant skyscrapers creating shimmering reflections on the wet asphalt below. Then, the camera zooms in slowly toward the sign. As it moves, a low electrical sizzling sound begins. In the background, the dense urban landscape of the cyberpunk metropolis is visible through a light atmospheric haze, with towering structures adorned with their own flickering advertisements. A complex web of cables and pipes crisscrosses between the buildings. The shot is at a low angle, looking up at the sign to emphasize its grand scale. The lighting is high-contrast and dramatic, dominated by the neon glow which creates sharp, specular reflections and deep shadows. The atmosphere is moody and tech-noir. The overall video presents a cinematic photography realistic style.,'
+PROMPT="On a wet street corner in a cyberpunk city at night, a large neon sign reading \"Hunyuan Video 1.5\" lights up sequentially, illuminating the dark, rainy environment with a pinkish-purple glow. he scene is a dark, rain-slicked street corner in a futuristic, cinematic cyberpunk city. Mounted on the metallic, weathered facade of a building is a massive, unlit neon sign. The sign's glass tube framework clearly spells out the words \"Hunyuan Video 1.5\". Initially, the street is dimly lit, with ambient light from distant skyscrapers creating shimmering reflections on the wet asphalt below. Then, the camera zooms in slowly toward the sign. As it moves, a low electrical sizzling sound begins. In the background, the dense urban landscape of the cyberpunk metropolis is visible through a light atmospheric haze, with towering structures adorned with their own flickering advertisements. A complex web of cables and pipes crisscrosses between the buildings. The shot is at a low angle, looking up at the sign to emphasize its grand scale. The lighting is high-contrast and dramatic, dominated by the neon glow which creates sharp, specular reflections and deep shadows. The atmosphere is moody and tech-noir. The overall video presents a cinematic photography realistic style.,"
 
 IMAGE_PATH=./data/reference_image.png # Optional, 'none' or <image path>
 SEED=1
@@ -210,6 +210,7 @@ CFG_DISTILLED=true # Inference with CFG distilled model, 2x speedup
 SPARSE_ATTN=true # Inference with sparse attention
 SAGE_ATTN=false # Inference with SageAttention
 MODEL_PATH=ckpts # Path to pretrained model
+REWRITE=true # Enable prompt rewriting
 
 torchrun --nproc_per_node=$N_INFERENCE_GPU generate.py \
   --prompt "$PROMPT" \
@@ -220,6 +221,7 @@ torchrun --nproc_per_node=$N_INFERENCE_GPU generate.py \
   --cfg_distilled $CFG_DISTILLED \
   --sparse_attn $SPARSE_ATTN \
   --use_sageattn $SAGE_ATTN \
+  --rewrite $REWRITE \
   --output_path $OUTPUT_PATH \
   --save_pre_sr_video \
   --model_path $MODEL_PATH

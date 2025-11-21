@@ -190,7 +190,7 @@ pip install -i https://mirrors.tencent.com/pypi/simple/ --upgrade tencentcloud-s
 
 > 你也可以将上述模型名替换为任何你已部署、与 vLLM 兼容的模型（包括 HuggingFace 等模型）。
 >
-> 默认为开启提示词重写。若需显式关闭，可以使用 `--rewrite false` 或 `--rewrite 0`。如果未配置 vLLM 提示词重写相关服务，管道会在本地直接生成，无远程重写。
+> 默认为开启提示词重写（`--rewrite` 默认值为 `true`）。若需显式关闭，可以使用 `--rewrite false` 或 `--rewrite 0`。如果未配置 vLLM 提示词重写相关服务，管道会在本地直接生成，无远程重写。
 
 示例：生成视频（支持 T2V/I2V。T2V 模式下设置 `IMAGE_PATH=none`，I2V 模式下指定图像路径）
 
@@ -200,7 +200,7 @@ export T2V_REWRITE_MODEL_NAME="<your_model_name>"
 export I2V_REWRITE_BASE_URL="<your_vllm_server_base_url>"
 export I2V_REWRITE_MODEL_NAME="<your_model_name>"
 
-PROMPT='On a wet street corner in a cyberpunk city at night, a large neon sign reading "Hunyuan Video 1.5" lights up sequentially, illuminating the dark, rainy environment with a pinkish-purple glow. he scene is a dark, rain-slicked street corner in a futuristic, cinematic cyberpunk city. Mounted on the metallic, weathered facade of a building is a massive, unlit neon sign. The sign's glass tube framework clearly spells out the words "Hunyuan Video 1.5". Initially, the street is dimly lit, with ambient light from distant skyscrapers creating shimmering reflections on the wet asphalt below. Then, the camera zooms in slowly toward the sign. As it moves, a low electrical sizzling sound begins. In the background, the dense urban landscape of the cyberpunk metropolis is visible through a light atmospheric haze, with towering structures adorned with their own flickering advertisements. A complex web of cables and pipes crisscrosses between the buildings. The shot is at a low angle, looking up at the sign to emphasize its grand scale. The lighting is high-contrast and dramatic, dominated by the neon glow which creates sharp, specular reflections and deep shadows. The atmosphere is moody and tech-noir. The overall video presents a cinematic photography realistic style.,'
+PROMPT="On a wet street corner in a cyberpunk city at night, a large neon sign reading \"Hunyuan Video 1.5\" lights up sequentially, illuminating the dark, rainy environment with a pinkish-purple glow. he scene is a dark, rain-slicked street corner in a futuristic, cinematic cyberpunk city. Mounted on the metallic, weathered facade of a building is a massive, unlit neon sign. The sign's glass tube framework clearly spells out the words \"Hunyuan Video 1.5\". Initially, the street is dimly lit, with ambient light from distant skyscrapers creating shimmering reflections on the wet asphalt below. Then, the camera zooms in slowly toward the sign. As it moves, a low electrical sizzling sound begins. In the background, the dense urban landscape of the cyberpunk metropolis is visible through a light atmospheric haze, with towering structures adorned with their own flickering advertisements. A complex web of cables and pipes crisscrosses between the buildings. The shot is at a low angle, looking up at the sign to emphasize its grand scale. The lighting is high-contrast and dramatic, dominated by the neon glow which creates sharp, specular reflections and deep shadows. The atmosphere is moody and tech-noir. The overall video presents a cinematic photography realistic style.,"
 
 IMAGE_PATH=./data/reference_image.png # 可选，'none' 或 <图像路径>
 SEED=1
@@ -214,6 +214,7 @@ CFG_DISTILLED=true # 使用 CFG 蒸馏模型进行推理，2倍加速
 SPARSE_ATTN=true # 使用稀疏注意力进行推理
 SAGE_ATTN=false # 使用 SageAttention 进行推理
 MODEL_PATH=ckpts # 预训练模型路径
+REWRITE=true # 启用提示词重写
 
 torchrun --nproc_per_node=$N_INFERENCE_GPU generate.py \
   --prompt "$PROMPT" \
@@ -224,6 +225,7 @@ torchrun --nproc_per_node=$N_INFERENCE_GPU generate.py \
   --cfg_distilled $CFG_DISTILLED \
   --sparse_attn $SPARSE_ATTN \
   --use_sageattn $SAGE_ATTN \
+  --rewrite $REWRITE \
   --output_path $OUTPUT_PATH \
   --save_pre_sr_video \
   --model_path $MODEL_PATH
