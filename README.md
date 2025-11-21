@@ -39,7 +39,7 @@ HunyuanVideo-1.5 is a video generation model that delivers top-tier quality with
 </p>
 
 ## 🔥🔥🔥 News
-👋 Nov 20, 2025: We release the inference code and model weights of HunyuanVideo.
+👋 Nov 20, 2025: We release the inference code and model weights of HunyuanVideo-1.5.
 
 
 ## 🎥 Demo
@@ -49,7 +49,7 @@ HunyuanVideo-1.5 is a video generation model that delivers top-tier quality with
 
 ## 🧩 Community Contributions
 
-If you develop/use HunyuanVideo in your projects, welcome to let us know.
+If you develop/use HunyuanVideo-1.5 in your projects, welcome to let us know.
 
 - **ComfyUI** - [ComfyUI](https://github.com/comfyanonymous/ComfyUI): A powerful and modular diffusion model GUI with a graph/nodes interface. ComfyUI supports HunyuanVideo-1.5 with various engineering optimizations for fast inference.
 
@@ -88,7 +88,7 @@ If you develop/use HunyuanVideo in your projects, welcome to let us know.
 
 
 ## 📖 Introduction
-We present HunyuanVideo 1.5, a lightweight yet powerful video generation model that achieves state-of-the-art visual quality and motion coherence with only 8.3 billion parameters, enabling efficient inference on consumer-grade GPUs. This achievement is built upon several key components, including meticulous data curation, an advanced DiT architecture with selective and sliding tile attention(SSTA), enhanced bilingual understanding through glyph-aware text encoding , progressive pre-training and post-training, and an efficient video super-resolution network. Leveraging these designs, we developed a unified framework capable of high-quality text-to-video and image-to-video generation across multiple durations and resolutions. Extensive experiments demonstrate that this compact and proficient model establishes a new state-of-the-art among open-source models. By releasing the code and weights of HunyuanVideo 1.5, we provide the community with a high-performance foundation that significantly lowers the cost of video creation and research, making advanced video generation more accessible to all.
+We present HunyuanVideo-1.5, a lightweight yet powerful video generation model that achieves state-of-the-art visual quality and motion coherence with only 8.3 billion parameters, enabling efficient inference on consumer-grade GPUs. This achievement is built upon several key components, including meticulous data curation, an advanced DiT architecture with selective and sliding tile attention(SSTA), enhanced bilingual understanding through glyph-aware text encoding , progressive pre-training and post-training, and an efficient video super-resolution network. Leveraging these designs, we developed a unified framework capable of high-quality text-to-video and image-to-video generation across multiple durations and resolutions. Extensive experiments demonstrate that this compact and proficient model establishes a new state-of-the-art among open-source models. By releasing the code and weights of HunyuanVideo-1.5, we provide the community with a high-performance foundation that significantly lowers the cost of video creation and research, making advanced video generation more accessible to all.
 
 
 ## ✨ Key Features
@@ -170,7 +170,7 @@ Download the pretrained models before generating videos. Detailed instructions a
 ### Prompt Writing Handbook
 Prompt enhancement plays a crucial role in enabling our model to generate high-quality videos. By writing longer and more detailed prompts, the generated video will be significantly improved. We encourage you to craft comprehensive and descriptive prompts to achieve the best possible video quality. we recommend community partners consulting our official guide on how to write effective prompts. 
 
-**Reference:** **[HunyuanVideo 1.5 Prompt Handbook](https://doc.weixin.qq.com/doc/w3_AXcAcwZSAGgCNACVygLxeQjyn4FYS?scode=AJEAIQdfAAoSfXnTj0AAkA-gaeACk)**
+**Reference:** **[HunyuanVideo-1.5 Prompt Handbook](https://doc.weixin.qq.com/doc/w3_AXcAcwZSAGgCNACVygLxeQjyn4FYS?scode=AJEAIQdfAAoSfXnTj0AAkA-gaeACk)**
 
 ### System Prompts for Automatic Prompt Enhancement
 For users seeking to optimize prompts for other large models, it is recommended to consult the definition of `t2v_rewrite_system_prompt` in the file `hyvideo/utils/rewrite/t2v_prompt.py` to guide text-to-video rewriting. Similarly, for image-to-video rewriting, refer to the definition of `i2v_rewrite_system_prompt` in `hyvideo/utils/rewrite/i2v_prompt.py`.
