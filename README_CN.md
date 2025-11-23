@@ -143,7 +143,7 @@ pip install -i https://mirrors.tencent.com/pypi/simple/ --upgrade tencentcloud-s
 ### 步骤 3：安装注意力库
 
 * Flash Attention: 
-  建议安装 Flash Attention 以实现更快的推理速度和更低的 GPU 内存消耗。
+  安装 Flash Attention 以实现更快的推理速度和更低的 GPU 内存消耗。
   详细安装说明请参考 [Flash Attention](https://github.com/Dao-AILab/flash-attention)。
 
 * Flex-Block-Attention: 
@@ -155,7 +155,8 @@ pip install -i https://mirrors.tencent.com/pypi/simple/ --upgrade tencentcloud-s
   ```
 
 * SageAttention: 
-
+  要启用 SageAttention 以实现更快的推理，您需要通过以下命令安装：
+  > **注意**: 启用 SageAttention 将自动禁用 Flex-Block-Attention。
   ```bash
   git clone https://github.com/cooper1637/SageAttention.git
   cd SageAttention 
