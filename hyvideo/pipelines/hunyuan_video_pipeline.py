@@ -1485,7 +1485,7 @@ class HunyuanVideo_1_5_Pipeline(DiffusionPipeline):
                     no_cache_steps=no_cache_steps,
                 )
             else:
-                raise ValueError(f"Unknown cache type: {cache_type}")
+                raise ValueError(f"Unknown cache type: {cache_type}. Only 'deepcache', 'teacache', 'taylorcache' are supported.")
             cache_helper.enable()
         else:
             cache_helper = None
