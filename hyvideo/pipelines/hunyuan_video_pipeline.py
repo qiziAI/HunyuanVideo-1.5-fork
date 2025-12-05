@@ -1484,11 +1484,25 @@ class HunyuanVideo_1_5_Pipeline(DiffusionPipeline):
 
         supported_transformer_version = os.listdir(os.path.join(cached_folder, "transformer"))
         if transformer_version not in supported_transformer_version:
-            raise ValueError(f"Could not find {transformer_version} in {cached_folder}. Only {supported_transformer_version} are available.")
+            error_msg = (
+                f"Could not find {transformer_version} in {cached_folder}. "
+                f"Only {supported_transformer_version} are available.\n"
+                f"Trying to download from https://huggingface.co/tencent/HunyuanVideo-1.5. "
+            )
+            loguru.logger.warning(error_msg)
+            from_pretrain_kwargs ={
+                'pretrained_model_name_or_path': 'tencent/HunyuanVideo-1.5',
+                'subfolder': f'transformer/{transformer_version}',
+            }
+        else:
+            from_pretrain_kwargs ={
+                'pretrained_model_name_or_path': os.path.join(cached_folder, "transformer", transformer_version),
+            }
 
         vae_inference_config = cls.get_vae_inference_config()
         transformer = HunyuanVideo_1_5_DiffusionTransformer.from_pretrained(
-            os.path.join(cached_folder, "transformer", transformer_version), torch_dtype=transformer_dtype, 
+            **from_pretrain_kwargs,
+            torch_dtype=transformer_dtype, 
             low_cpu_mem_usage=True,
         ).to(transformer_init_device)
 
