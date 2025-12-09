@@ -431,6 +431,7 @@ Replace the `create_dummy_dataloader()` function in `train.py` with your own imp
 
 - **Required fields:**
   - `"pixel_values"`: `torch.Tensor` - Video: `[B, C, F, H, W]` or Image: `[B, C, H, W]`
+    - Pixel values must be in range `[-1, 1]` 
     - Note: For video data, temporal dimension F must be `4n+1` (e.g., 1, 5, 9, 13, 17, ...)
   - `"text"`: `List[str]` - Text prompts for each sample
   - `"data_type"`: `str` - `"video"` or `"image"`

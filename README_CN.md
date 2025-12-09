@@ -430,6 +430,7 @@ HunyuanVideo-1.5 使用 **Muon 优化器**进行训练，该优化器能够加�
 
 - **必需字段：**
   - `"pixel_values"`: `torch.Tensor` - 视频：`[B, C, F, H, W]` 或图像：`[B, C, H, W]`
+    - 像素值必须在 `[-1, 1]` 范围内
     - 注意：对于视频数据，时间维度 F 必须是 `4n+1`（例如：1, 5, 9, 13, 17, ...）
   - `"text"`: `List[str]` - 每个样本的文本提示词
   - `"data_type"`: `str` - `"video"` 或 `"image"`

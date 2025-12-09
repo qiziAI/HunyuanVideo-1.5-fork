@@ -24,6 +24,7 @@ Quick Start:
    - Replace the `create_dummy_dataloader()` function with your own implementation
    - Your dataloader should return batches with the following format:
      * "pixel_values": torch.Tensor - Video: [B, C, F, H, W] or Image: [B, C, H, W]
+       Pixel values must be in range [-1, 1] 
        Note: For video data, temporal dimension F must be 4n+1 (e.g., 1, 5, 9, 13, 17, ...)
      * "text": List[str] - Text prompts for each sample
      * "data_type": str - "video" or "image"
@@ -564,16 +565,15 @@ class HunyuanVideoTrainer:
         """Encode images to vision states (for i2v)"""
         if self.vision_encoder is None:
             return None
-        if isinstance(images, torch.Tensor):
-            images_np = (images.cpu().permute(0, 2, 3, 1).numpy() * 255).astype("uint8")
-        else:
-            images_np = images
+        assert images.max() <= 1.0 and images.min() >= -1.0, f"Images must be in the range [-1, 1], but got {images.min()} {images.max()}"
+        images = (images + 1) / 2 # [-1, 1] -> [0, 1]
+        images_np = (images.cpu().permute(0, 2, 3, 1).numpy() * 255).clip(0, 255).astype("uint8")
         vision_states = self.vision_encoder.encode_images(images_np)
         return vision_states.last_hidden_state.to(device=self.device, dtype=self.transformer.dtype)
     
     def encode_vae(self, images: torch.Tensor) -> torch.Tensor:
-        if images.max() > 1.0:
-            images = images / 255.0
+        if images.max() > 1.0 or images.min() < -1.0:
+            raise ValueError(f"Images must be in the range [-1, 1], but got {images.min()} {images.max()}")
         
         if images.ndim == 4:
             images = images.unsqueeze(2)
@@ -623,7 +623,8 @@ class HunyuanVideoTrainer:
         
         Expected batch format:
         {
-            "pixel_values": torch.Tensor,  # [B, C, F, H, W] for video or [B, C, H, W] for image
+            "pixel_values": torch.Tensor, # [B, C, F, H, W] for video or [B, C, H, W] for image
+                                          # Pixel values must be in range [-1, 1] 
             "text": List[str],
             "data_type": str,  # "image" or "video"
             "byt5_text_ids": Optional[torch.Tensor],
@@ -674,7 +675,8 @@ class HunyuanVideoTrainer:
                 byt5_text_mask = torch.cat(byt5_mask_list, dim=0)
         
         vision_states = None
-        if task_type == "i2v" and images is not None:
+        if task_type == "i2v":
+            assert images is not None, '`pixel_values` must be provided for i2v task'
             if images.ndim == 5:
                 first_frame = images[:, :, 0, :, :]
             else:
@@ -1003,8 +1005,7 @@ def create_dummy_dataloader(config: TrainingConfig):
     - "pixel_values": torch.Tensor
         * For video: shape [B, C, F, H, W] where F is the number of frames
         * For image: shape [B, C, H, W] (will be automatically expanded to [B, C, 1, H, W])
-        * Pixel values should be in range [0, 255] (will be normalized to [0, 1] then [-1, 1])
-        * Or in range [0, 1] (will be normalized to [-1, 1])
+        * Pixel values must be in range [-1, 1]
         * Data type: torch.float32
         * Note: For video data, temporal dimension F must be 4n+1 (e.g., 1, 5, 9, 13, 17, 21, ...)
           to satisfy VAE requirements. The dataset should ensure this before returning data.
@@ -1065,7 +1066,8 @@ def create_dummy_dataloader(config: TrainingConfig):
         
         def __getitem__(self, idx):
             # Video: temporal dimension must be 4n+1, using 17 frames
-            data = torch.randn(3, 17, 64, 64)
+            # Generate data in range [-1, 1]
+            data = torch.rand(3, 17, 64, 64) * 2.0 - 1.0  # [0, 1] -> [-1, 1]
             data_type = "video"
 
             return {
