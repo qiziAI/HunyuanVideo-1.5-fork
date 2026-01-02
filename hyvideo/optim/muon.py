@@ -142,7 +142,12 @@ class Muon(torch.optim.Optimizer):
                 # sanity check
                 g = p.grad
                 if g is None:
-                    continue
+                    # For i2v task, vision_in does not have gradients.
+                    # Creating a dummy gradient to allow `full_tensor` computation.
+                    if isinstance(p, DTensor):
+                        g = DTensor.from_local(torch.zeros_like(p.to_local()), p.device_mesh, placements=p.placements)
+                    else:
+                        g = torch.zeros_like(p)
                 if g.ndim > 2:
                     g = g.view(g.size(0), -1)
                 assert g is not None
