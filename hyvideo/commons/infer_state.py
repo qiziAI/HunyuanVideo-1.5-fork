@@ -47,41 +47,23 @@ def parse_range(value):
         return [int(x) for x in value.split(',')]
 
 def initialize_infer_state(args):
-    global __infer_state
-    sage_blocks_range = parse_range(args.sage_blocks_range)
-    no_cache_block_id = parse_range(args.no_cache_block_id)
-    # Map CLI argument use_sageattn to internal enable_sageattn field
-    use_sageattn = getattr(args, 'use_sageattn', False)
-
-
+    state = InferState()
+    # Mapping from CLI argument names to InferState field names
+    mapping = {
+        'use_sageattn': 'enable_sageattn'
+    }
     
-    # Parse include_patterns from args
-    include_patterns = getattr(args, 'include_patterns', "double_blocks")
-    if isinstance(include_patterns, str):
-        # Split by comma and strip whitespace
-        include_patterns = [p.strip() for p in include_patterns.split(',') if p.strip()]
-    
+    for field_name in state.__dataclass_fields__.keys():
+        source_name = next((k for k, v in mapping.items() if v == field_name), field_name)
+        if hasattr(args, source_name):
+            val = getattr(args, source_name)
+            if field_name in ['sage_blocks_range', 'no_cache_block_id']:
+                val = parse_range(val)
+            elif field_name == 'include_patterns' and isinstance(val, str):
+                val = [p.strip() for p in val.split(',') if p.strip()]
+            setattr(state, field_name, val)
 
-
-    __infer_state = InferState(
-        enable_sageattn = use_sageattn,
-        sage_blocks_range = sage_blocks_range,
-        enable_torch_compile = args.enable_torch_compile,
-
-        # cache related
-        enable_cache = args.enable_cache,
-        cache_type = args.cache_type,
-        no_cache_block_id = no_cache_block_id,
-        cache_start_step = args.cache_start_step,
-        cache_end_step = args.cache_end_step,
-        total_steps = args.total_steps,
-        cache_step_interval = args.cache_step_interval,
-
-        # fp8 gemm related
-        use_fp8_gemm = args.use_fp8_gemm,
-        quant_type = args.quant_type,
-        include_patterns = include_patterns,
-    )
+    __infer_state = state
     return __infer_state
 
 def get_infer_state():
