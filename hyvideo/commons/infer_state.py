@@ -40,11 +40,25 @@ class InferState:
 __infer_state = None
 
 def parse_range(value):
-    if '-' in value:
-        start, end = map(int, value.split('-'))
-        return list(range(start, end + 1))
-    else:
-        return [int(x) for x in value.split(',')]
+    if not value:
+        return []
+    
+    result = set()
+    # 先按逗号分割，支持形式 (1) 和 (3) 的初步拆分
+    parts = value.split(',')
+    
+    for part in parts:
+        part = part.strip()
+        if '-' in part:
+            # 处理范围形式 (2) 如 "1-3" 或 (3) 中的 "3-5"
+            start, end = map(int, part.split('-'))
+            result.update(range(start, end + 1))
+        elif part:
+            # 处理单个数字
+            result.add(int(part))
+            
+    # 返回排序后的列表
+    return sorted(list(result))
 
 def initialize_infer_state(args):
     state = InferState()
