@@ -1503,7 +1503,7 @@ class HunyuanVideo_1_5_Pipeline(DiffusionPipeline):
                 'pretrained_model_name_or_path': os.path.join(cached_folder, "transformer", transformer_version),
             }
 
-        vae_inference_config = cls.get_vae_inference_config()
+        # vae_inference_config = cls.get_vae_inference_config()
         transformer = HunyuanVideo_1_5_DiffusionTransformer.from_pretrained(
             **from_pretrain_kwargs,
             torch_dtype=transformer_dtype, 
@@ -1512,9 +1512,13 @@ class HunyuanVideo_1_5_Pipeline(DiffusionPipeline):
 
         vae = hunyuanvideo_15_vae.AutoencoderKLConv3D.from_pretrained(
             os.path.join(cached_folder, "vae"), 
-            torch_dtype=vae_inference_config['dtype']
+            torch_dtype=kwargs.get('vae_dtype', torch.float16)
         ).to(device)
-        vae.set_tile_sample_min_size(vae_inference_config['sample_size'], vae_inference_config['tile_overlap_factor'])
+        
+        vae_sample_size = kwargs.get('vae_sample_size', None) or vae.sample_size
+        vae_tile_overlap_factor = kwargs.get('vae_tile_overlap_factor', None) or vae.tile_overlap_factor
+        vae.set_tile_sample_min_size(vae_sample_size, vae_tile_overlap_factor)
+        
         scheduler = FlowMatchDiscreteScheduler.from_pretrained(os.path.join(cached_folder, "scheduler"))
 
         byt5_kwargs, prompt_format = cls._load_byt5(cached_folder, True, 256, device=device)

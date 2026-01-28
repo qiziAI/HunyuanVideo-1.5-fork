@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hyvideo-fork"
-version = "20260122"
+version = "20260128"
 dependencies = [
     "tqdm>=4.67.1",
     "torch>=2.6.0",
