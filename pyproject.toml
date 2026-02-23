@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hyvideo-fork"
-version = "20260128"
+version = "20260211"
 dependencies = [
     "tqdm>=4.67.1",
-    "torch>=2.6.0",
+    "torch==2.9.1",
     "peft>=0.17.0",
     "openai>=2.8.0",
     "einops>=0.8.0",
