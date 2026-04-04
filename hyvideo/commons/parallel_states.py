@@ -81,9 +81,10 @@ __parallel_dims = None
 def initialize_parallel_state(
     sp: int = 1,
     dp_replicate: int = 1,
+    world_size: int = -1
 ):
     global __parallel_dims
-    __parallel_dims = ParallelDims(sp=sp, dp_replicate=dp_replicate)
+    __parallel_dims = ParallelDims(sp=sp, dp_replicate=dp_replicate, world_size=world_size)
     return __parallel_dims
 
 def get_parallel_state():
