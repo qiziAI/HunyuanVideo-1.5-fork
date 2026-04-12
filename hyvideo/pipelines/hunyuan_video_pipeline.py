@@ -1369,7 +1369,7 @@ class HunyuanVideo_1_5_Pipeline(DiffusionPipeline):
             # Apply cache if enabled
             if infer_state.enable_cache:
                 if not is_angelslim_available():
-                    raise RuntimeError("Please install angelslim==0.2.1 via `pip install angelslim==0.2.1` to enable cache.")
+                    raise RuntimeError("Please install angelslim via `pip install angelslim` to enable cache.")
                 from angelslim.compressor.diffusion import DeepCacheHelper, TeaCacheHelper, TaylorCacheHelper
                 no_cache_steps = list(range(0, infer_state.cache_start_step)) + list(range(infer_state.cache_start_step, infer_state.cache_end_step, infer_state.cache_step_interval)) + list(range(infer_state.cache_end_step, infer_state.total_steps))
                 cache_type = infer_state.cache_type

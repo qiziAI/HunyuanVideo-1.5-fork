@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hyvideo-fork"
-version = "20260404"
+version = "20260412"
 dependencies = [
     "tqdm>=4.67.1",
     "torch",
@@ -15,7 +15,7 @@ dependencies = [
     "numpy>=1.26.4",
     "pillow>=11.3.0",
     "imageio>=2.37.0",
-    "angelslim>=0.2.1",
+    "angelslim-fork",
     "imageio-ffmpeg>=0.6.0",
     "omegaconf>=2.3.0",
     "torchaudio",
